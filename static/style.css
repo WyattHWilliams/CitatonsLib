@@ -1,0 +1,14 @@
+.en_p input {
+    width: 10%;
+    padding: 0%;
+    margin: 0%;
+}
+
+.en_sum input {
+    width: 100%;
+}
+
+div {
+    width: fit-content;
+    box-sizing: unset;
+}
