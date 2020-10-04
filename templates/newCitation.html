@@ -66,39 +66,53 @@
         <hr>
         <div id="sec_form" style="left: 10%; position:relative">
             <h4>Section</h4>
-            <div id="ent_form" style="left: 10%; position:relative; width: 50%">
-                <h6>Entry</h6>
-                <div class="row">
-                    <div class="row">
-                        <div class="p-1 col">{{form.section_form.entry_form.page_start.label}}</div>
-                        <div class="p-1 col en_p">{{form.section_form.entry_form.page_start}}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="p-1">{{form.section_form.entry_form.paragraph_start.label}}</div>
-                        <div class="p-1 en_p">{{form.section_form.entry_form.paragraph_start}}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="p-1">{{form.section_form.entry_form.page_stop.label}}</div>
-                        <div class="p-1 en_p">{{form.section_form.entry_form.page_stop}}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="p-1">{{form.section_form.entry_form.paragraph_stop.label}}</div>
-                        <div class="p-1 en_p">{{form.section_form.entry_form.paragraph_stop}}</div>
+            <div id="entries">
+                <div id="entry_container">
+                    <div class="ent_form">
+                        <h6>Entry</h6>
+                        <div class="row m-2">
+                            <div class="col row">
+                                <div class="p-1 col">{{form.section_form.entry_form.page_start.label}}</div>
+                                <div class="p-1 col ">{{form.section_form.entry_form.page_start(class_='en_p')}}</div>
+                            </div>
+                            <div class="col row">
+                                <div class="p-1 col">{{form.section_form.entry_form.paragraph_start.label}}</div>
+                                <div class="p-1 col">{{form.section_form.entry_form.paragraph_start(class_='en_p')}}
+                                </div>
+                            </div>
+                            <div class="col row">
+                                <div class="p-1 col">{{form.section_form.entry_form.page_stop.label}}</div>
+                                <div class="p-1 col">{{form.section_form.entry_form.page_stop(class_='en_p')}}</div>
+                            </div>
+                            <div class="col row">
+                                <div class="p-1 col">{{form.section_form.entry_form.paragraph_stop.label}}</div>
+                                <div class="p-1 col">{{form.section_form.entry_form.paragraph_stop(class_='en_p')}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-2 sum">
+                            <div class="p-1">{{form.section_form.entry_form.content.label}}</div>
+                            <div class="p-1 sum">{{form.section_form.entry_form.content(class_='sum')}}</div>
+                        </div>
+                        <hr>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="p-1">{{form.section_form.entry_form.content.label}}</div>
-                    <div class="p-1 en_sum">{{form.section_form.entry_form.content}}</div>
-                </div>
+                <h6 id="s1_entryBtn" class="btn ent_form">Add New Entry</h6>
             </div>
-            <div class="form-inline">
-                <div class="form-group">
-                    <div class="p-1">{{form.section_form.sec_summary.label}}</div>
-                    <div class="p-1">{{form.section_form.sec_summary}}</div>
-                </div>
+
+            <div class="m-2 sec_form_sum">
+                <div class="p-1">{{form.section_form.sec_summary.label}}</div>
+                <div class="p-1 sum">{{form.section_form.sec_summary(class_='sum')}}</div>
             </div>
+            <hr>
         </div>
+        <button>submit</button>
     </form>
+    <hr>
+    {{citations}}
+
+    <!-- SCRIPTS -->
+    <script src="/static/newCitation.js"></script>
 </body>
 
 </html>

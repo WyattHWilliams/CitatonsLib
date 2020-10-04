@@ -1,14 +1,30 @@
-.en_p input {
-    width: 10%;
+.sec_form {
+    left: 10%;
+    position:relative
+}
+
+.sec_form_sum {
+    position:relative;
+    width: 50%
+}
+
+.ent_form {
+    left: 10%;
+    position:relative;
+    width: 50%
+}
+
+.en_p {
+    width: 100%;
     padding: 0%;
     margin: 0%;
 }
 
-.en_sum input {
+.sum {
     width: 100%;
 }
 
 div {
     width: fit-content;
-    box-sizing: unset;
+    /* box-sizing: unset; */
 }

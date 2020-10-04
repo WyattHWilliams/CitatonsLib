@@ -2,18 +2,8 @@
 from flask import Flask, request, render_template, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, FormField
-from wtforms.validators import InputRequired
-from flask_bootstrap import Bootstrap
-
-# ----- [///// COMFIGURATIONS /////] -----
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SHH'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///library'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
-db = SQLAlchemy(app)
-Bootstrap(app)
+from config import app, db
+from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm
 
 
 # ----- [///// FUNCTIONS /////] -----
@@ -23,98 +13,54 @@ def create_models():
     print('models created')
 
 
-# ----- [///// MODELS /////] -----
-class Citation(db.Model):
-    __tablename__ = 'citations'
-    sum_states = ['Not Started', 'In Progress', 'Complete']
-
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
-    title = db.Column(db.Text,
-                      nullable=False)
-    volume = db.Column(db.Text,
-                       nullable=True)
-    edition = db.Column(db.Integer,
-                        nullable=True)
-    author = db.Column(db.Text,
-                       nullable=False,
-                       default='Unknown')
-    publisher = db.Column(db.Text,
-                          nullable=False,
-                          default='Unknown')
-    yr_published = db.Column(db.Text, default='Unknown')
-    url = db.Column(db.Text)
-    lccn = db.Column(db.Text)
-    yr_accessed = db.Column(db.Text)
-    summary_status = db.Column(db.Text,
-                               nullable=False,
-                               default='Not Started')
-    sections = db.relationship('Section', backref='citations')
-
-
-class Section(db.Model):
-    __tablename__ = 'sections'
-
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
-    parent_citation = db.Column(db.Integer,
-                                foreign_key='citations.id',
-                                nullable=False)
-    sec_summary = db.Column(db.Text)
-    entries = db.relationship('Entry', backref='sections')
-
-
-class Entry(db.Model):
-    __tablename__ = 'entries'
-
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
-    page_start = db.Column(db.Text)
-    paragraph_start = db.Column(db.Text)
-    page_stop = db.Column(db.Text)
-    paragraph_stop = db.Column(db.Text)
-    content = db.Column(db.Text)
-    parent_section = db.Column(db.Integer,
-                               foreign_key='sections.id',
-                               nullable=False)
-    # referenced_citations = db.relationship('Citation', backref='entries')
-
-
-class NewEntryForm(FlaskForm):
-    page_start = StringField('From Page')
-    paragraph_start = StringField('Paragraph')
-    page_stop = StringField('To Page')
-    paragraph_stop = StringField('Paragraph')
-    content = StringField('Entry', validators=[InputRequired()])
-
-
-class NewSectionForm(FlaskForm):
-    sec_summary = StringField('Section Summary', validators=[InputRequired()])
-    entry_form = FormField(NewEntryForm)
-
-
-class NewCitationForm(FlaskForm):
-    title = StringField('Title', validators=[InputRequired()])
-    volume = StringField('Volume')
-    edition = StringField('Edition')
-    author = StringField('Author')
-    publisher = StringField('Publisher')
-    yr_published = StringField('Year Published')
-    url = StringField('URL')
-    lccn = StringField('Library of Congress Call Number')
-    yr_accessed = StringField('Year First Accessed')
-    summary_status = SelectField('Summary Status', choices=[
-                                 (s, s) for s in Citation.sum_states])
-    section_form = FormField(NewSectionForm)
-
-
+# ----- [///// PREP /////] -----
 create_models()
 
 
-@app.route('/')
+# ----- [///// ROUTES /////] -----
+@app.route('/', methods=['GET', 'POST'])
 def main():
     form = NewCitationForm()
-    return render_template('newCitation.html', form=form)
+
+    if form.validate_on_submit():
+        # citation data
+        title = form.title.data
+        volume = form.volume.data
+        edition = form.edition.data
+        author = form.author.data
+        publisher = form.publisher.data
+        yr_published = form.yr_published.data
+        url = form.url.data
+        lccn = form.lccn.data
+        yr_accessed = form.yr_accessed.data
+        summary_status = form.summary_status.data
+
+        new_citation = Citation(title=title,
+                                volume=volume,
+                                edition=edition,
+                                author=author,
+                                publisher=publisher,
+                                yr_published=yr_published,
+                                url=url,
+                                lccn=lccn,
+                                yr_accessed=yr_accessed,
+                                summary_status=summary_status)
+        db.session.add(new_citation)
+
+        for section in form.sections.data:
+            new_section = Section(**section)
+            db.session.add(new_section)
+
+            for entry in form.entries.data:
+                new_entry = Entry(**entry)
+                db.session.add(new_entry)
+                new_section.entries.append(new_entry)
+
+            new_citation.sections.append(new_section)
+
+        db.session.commit()
+        citations = Citation.query
+
+        return render_template('new.html', form=form, citations=citations)
+
+    return render_template('new.html', form=form)
