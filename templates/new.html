@@ -62,7 +62,7 @@
     <hr>
     <div id="summary">
 
-        <a id="add" href="#">Add Section</a>
+        <a class="add_sec" href="#">Add Section</a>
 
         {# Show all subforms #}
         <form id="section-form" action="" method="POST" role="form">
@@ -71,7 +71,7 @@
                 {% for section_form in form.sections %}
                 <div id="section-{{ loop.index0 }}" class="secform" data-index="{{ loop.index0 }}">
 
-                    <a id="add" href="#">Add Entry</a>
+                    <a class="add_ent" href="#">Add Entry</a>
 
                     {# Show all subforms #}
                     <form id="entry-form" action="" method="POST" role="form">
@@ -124,6 +124,28 @@
             {{ data }}
         </p>
         {% endif %}
+    </div>
+
+    <!-- TEMPLATES -->
+
+    <div id="entry-*" class="is-hidden" data-index="*">
+        <label for="sections-^-entries-*-page_start">From Page</label>
+        <input id="sections-^-entries-*-page_start" name="sections-^-entries-*-page_start" type="text" value="">
+
+        <label for="sections-^-entries-*-paragraph_start">Paragraph</label>
+        <input id="sections-^-entries-*-paragraph_start" name="sections-^-entries-*-paragraph_start" type="text"
+            value="">
+
+        <label for="sections-^-entries-*-page_stop">To Page</label>
+        <input id="sections-^-entries-*-page_stop" name="sections-^-entries-*-page_stop" type="text" value="">
+
+        <label for="sections-^-entries-*-paragraph_stop">Paragraph</label>
+        <input id="sections-^-entries-*-paragraph_stop" name="sections-^-entries-*-paragraph_stop" type="text" value="">
+
+        <label for="sections-^-entries-*-content">Entry</label>
+        <input id="sections-^-entries-*-content" name="sections-^-entries-*-content" required="" type="text" value="">
+
+        <a class="remove_ent" href="#">Remove</a>
     </div>
 
     <!-- SCRIPTS -->

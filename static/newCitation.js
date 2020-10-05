@@ -11,7 +11,7 @@ function adjustIndices(removedIndex, formClass) {
         const newIndex = index - 1;
 
         if (index < removedIndex) {
-            return True;
+            return true;
         }
 
         // Change the Id in the form
@@ -34,8 +34,42 @@ function removeForm(form, formClass) {
     adjustIndices(removedIndex, formClass);
 }
 
-// add a subform
+// add an entry form
+function addEntForm(secIdx) {
+    const temp_ent_form = document.querySelector('div[id="entry-*"]')
+    if (!temp_ent_form) {
+        console.log('[ERROR] Cannot Find Template');
+        return;
+    }
+    const section = document.querySelector(`div[id="section-${secIdx}"]`);
+    const entFormsContainer = document.querySelector('div[id="entforms-container"]');
+    const lastEntForm = document.querySelector(`div[id="entforms-container"] > :last-child`);
+    console.log(lastEntForm)
 
+    let newIndex = 0;
+
+    if (lastEntForm) {
+        newIndex = parseInt(lastEntForm.dataset.index) + 1;
+    }
+
+    //add elements
+    let newForm = temp_ent_form.cloneNode(true);
+
+    newForm.setAttribute('id', newForm.getAttribute('id').replace('*', newIndex));
+    newForm.dataset.index = newIndex;
+
+    newForm.querySelectorAll('input').forEach(function (input) {
+        input.setAttribute('id', input.getAttribute('id').replace('*', newIndex));
+        input.setAttribute('id', input.getAttribute('id').replace('^', secIdx));
+        input.setAttribute('name', input.getAttribute('name').replace('*', newIndex));
+        input.setAttribute('name', input.getAttribute('name').replace('^', secIdx));
+    });
+
+    //append
+    entFormsContainer.appendChild(newForm);
+    newForm.classList.add('entForm');
+    newForm.classList.remove('is-hidden');
+}
 
 summary.addEventListener('click', function (e) {
     // console.log(e.target);
@@ -48,5 +82,14 @@ summary.addEventListener('click', function (e) {
         form = e.target.parentElement
         formClass = '.secform'
         removeForm(form, formClass);
+    }
+})
+
+summary.addEventListener('click', function (e) {
+    // console.log(e.target);
+    if (e.target.classList.contains('add_ent')) {
+        secIdx = e.target.parentElement.dataset.index;
+        console.log(secIdx);
+        addEntForm(secIdx);
     }
 })
