@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from config import app, db
 from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm
+from wtforms import SubmitField
 
 
 # ----- [///// FUNCTIONS /////] -----
@@ -18,7 +19,13 @@ create_models()
 
 
 # ----- [///// ROUTES /////] -----
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def home():
+    citations = Citation.query.all()
+    return render_template('home.html', citations=citations)
+
+
+@app.route('/add_citation', methods=['GET', 'POST'])
 def main():
     form = NewCitationForm()
 
@@ -48,11 +55,19 @@ def main():
         db.session.add(new_citation)
 
         for section in form.sections.data:
-            new_section = Section(**section)
+            print('***********************')
+            print(section)
+            new_section = Section(sec_summary=section['sec_summary'])
             db.session.add(new_section)
 
-            for entry in form.entries.data:
-                new_entry = Entry(**entry)
+            for entry in section['entries']:
+                print('************************')
+                print(entry)
+                new_entry = Entry(page_start=entry['page_start'],
+                                  paragraph_start=entry['paragraph_start'],
+                                  page_stop=entry['page_stop'],
+                                  paragraph_stop=entry['paragraph_stop'],
+                                  content=entry['content'])
                 db.session.add(new_entry)
                 new_section.entries.append(new_entry)
 
@@ -61,6 +76,6 @@ def main():
         db.session.commit()
         citations = Citation.query
 
-        return render_template('new.html', form=form, citations=citations)
+        return redirect('/')
 
     return render_template('new.html', form=form)

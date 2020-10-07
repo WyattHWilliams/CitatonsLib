@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>New Citation</title>
+</head>
+
+<body>
+    <h1>Welcome!</h1>
+    <a href="/add_citation">New Citation</a>
+    <hr>
+    <ul>
+        {% for cit in citations %}
+        <li>
+            <h6>{{cit.title}}</h6>
+            <div class="row">
+                <small class="p-2">{{cit.author}}</small>
+                <small class="p-2"> | </small>
+                <small class="p-2">{{cit.publisher}}</small>
+                <small class="p-2"> | </small>
+                <small class="p-2">{{cit.yr_published}}</small>
+            </div>
+            {% for sec in cit.sections %}
+            <p>{{sec.sec_summary}}</p>
+            <ul>
+                {% for ent in sec.entries %}
+                <div class="row">
+                    <small>pg. {{ent.page_start}}--</small>
+                    <small>pg. {{ent.page_stop}}</small>
+                </div>
+                <p>{{ent.content}}</p>
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

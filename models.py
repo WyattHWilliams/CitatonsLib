@@ -1,6 +1,6 @@
 # ----- [///// IMPORTS /////] -----
 from flask_wtf import FlaskForm
-from wtforms import Form, StringField, SelectField, FormField, IntegerField, FieldList
+from wtforms import Form, StringField, SelectField, FormField, IntegerField, FieldList, SubmitField
 from wtforms.validators import InputRequired
 from config import app, db
 
@@ -16,7 +16,7 @@ class Citation(db.Model):
                       nullable=False)
     volume = db.Column(db.Text,
                        nullable=True)
-    edition = db.Column(db.Integer,
+    edition = db.Column(db.Text,
                         nullable=True)
     author = db.Column(db.Text,
                        nullable=False,
@@ -41,7 +41,7 @@ class Section(db.Model):
                    primary_key=True,
                    autoincrement=True)
     parent_citation_id = db.Column(db.Integer,
-                                   foreign_key='citations.id',
+                                   db.ForeignKey('citations.id'),
                                    nullable=False)
     sec_summary = db.Column(db.Text)
     # entries = db.relationship('Entry', backref='sections')
@@ -63,7 +63,7 @@ class Entry(db.Model):
     paragraph_stop = db.Column(db.Text)
     content = db.Column(db.Text)
     parent_section_id = db.Column(db.Integer,
-                                  foreign_key='sections.id',
+                                  db.ForeignKey('sections.id'),
                                   nullable=False)
 
     # relationships
@@ -77,12 +77,12 @@ class NewEntryForm(Form):
     paragraph_start = IntegerField('Paragraph')
     page_stop = IntegerField('To Page')
     paragraph_stop = IntegerField('Paragraph')
-    content = StringField('Entry', validators=[InputRequired()])
+    content = StringField('Entry')
 
 
 class NewSectionForm(Form):
     sec_summary = StringField('Section Summary', validators=[InputRequired()])
-    entries = FieldList(FormField(NewEntryForm), min_entries=1)
+    entries = FieldList(FormField(NewEntryForm), min_entries=0)
     # entry_form = FormField(NewEntryForm)
 
 
@@ -99,5 +99,5 @@ class NewCitationForm(FlaskForm):
     summary_status = SelectField('Summary Status', choices=[
                                  (s, s) for s in Citation.sum_states])
     sections = FieldList(FormField(NewSectionForm),
-                         min_entries=1)
+                         min_entries=0)
     # section_form = FormField(NewSectionForm)

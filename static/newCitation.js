@@ -36,14 +36,16 @@ function removeForm(form, formClass) {
 
 // add an entry form
 function addEntForm(secIdx) {
-    const temp_ent_form = document.querySelector('div[id="entry-*"]')
+    const temp_ent_form = document.querySelector('div[id="section-^-entry-*"]')
     if (!temp_ent_form) {
         console.log('[ERROR] Cannot Find Template');
         return;
     }
     const section = document.querySelector(`div[id="section-${secIdx}"]`);
-    const entFormsContainer = document.querySelector('div[id="entforms-container"]');
-    const lastEntForm = document.querySelector(`div[id="entforms-container"] > :last-child`);
+    const entFormsContainer = document.querySelector(`div[id="entforms-container-${secIdx}"]`);
+    const entforms = document.querySelectorAll('div[class="entform"]');
+    const lastEntForm = entforms[entforms.length - 1]
+    // const lastEntForm = document.querySelector(`div[id="entforms-container-${secIdx}"] > :last-child`);
     console.log(lastEntForm)
 
     let newIndex = 0;
@@ -56,6 +58,7 @@ function addEntForm(secIdx) {
     let newForm = temp_ent_form.cloneNode(true);
 
     newForm.setAttribute('id', newForm.getAttribute('id').replace('*', newIndex));
+    newForm.setAttribute('id', newForm.getAttribute('id').replace('^', secIdx));
     newForm.dataset.index = newIndex;
 
     newForm.querySelectorAll('input').forEach(function (input) {
@@ -65,9 +68,60 @@ function addEntForm(secIdx) {
         input.setAttribute('name', input.getAttribute('name').replace('^', secIdx));
     });
 
+    newForm.querySelectorAll('label').forEach(function (label) {
+        label.setAttribute('for', label.getAttribute('for').replace('*', newIndex));
+        label.setAttribute('for', label.getAttribute('for').replace('^', secIdx));
+    });
+
     //append
     entFormsContainer.appendChild(newForm);
     newForm.classList.add('entForm');
+    newForm.classList.remove('is-hidden');
+}
+
+// add an entry form
+function addSecForm() {
+    const temp_sec_form = document.querySelector('div[id="section-^"]')
+    if (!temp_sec_form) {
+        console.log('[ERROR] Cannot Find Template');
+        return;
+    }
+    const secFormsContainer = document.querySelector('div[id="secforms-container"]');
+    const lastSecForm = document.querySelector(`div[id="secforms-container"] > :last-child`);
+    console.log(lastSecForm)
+
+    let newIndex = 0;
+
+    if (lastSecForm) {
+        newIndex = parseInt(lastSecForm.dataset.index) + 1;
+    }
+
+    //add elements
+    let newForm = temp_sec_form.cloneNode(true);
+
+    newForm.setAttribute('id', newForm.getAttribute('id').replace('^', newIndex));
+    newForm.dataset.index = newIndex;
+
+    newForm.querySelectorAll('input').forEach(function (input) {
+        input.setAttribute('id', input.getAttribute('id').replace('^', newIndex));
+        input.setAttribute('name', input.getAttribute('name').replace('^', newIndex));
+    });
+
+    newForm.querySelectorAll('label').forEach(function (label) {
+        label.setAttribute('for', label.getAttribute('for').replace('^', newIndex));
+    });
+
+    // newForm.querySelectorAll('form').forEach(function (form) {
+    //     form.setAttribute('id', form.getAttribute('id').replace('^', newIndex));
+    // });
+
+    newForm.querySelectorAll('div[class="entforms-cont"]').forEach(function (div) {
+        div.setAttribute('id', div.getAttribute('id').replace('^', newIndex));
+    });
+
+    //append
+    secFormsContainer.appendChild(newForm);
+    newForm.classList.add('secForm');
     newForm.classList.remove('is-hidden');
 }
 
@@ -91,5 +145,8 @@ summary.addEventListener('click', function (e) {
         secIdx = e.target.parentElement.dataset.index;
         console.log(secIdx);
         addEntForm(secIdx);
+    }
+    else if (e.target.classList.contains('add_sec')) {
+        addSecForm();
     }
 })
