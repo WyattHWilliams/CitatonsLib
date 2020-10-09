@@ -1,0 +1,104 @@
+.citations_list {
+    position: relative;
+    left: 50%;
+    width: 30%;
+    height: auto;
+}
+
+.citation_container {
+    position: relative;
+    left: 2%;
+    width: 96%;
+    border-top: 2px solid black;
+}
+
+.header_row {
+    
+    width: 100%;
+}
+
+    .header_row h4 {
+        display: inline-block;
+        width: 20%;
+        margin: 5px 0;
+        padding: 2px 0 2px 1%;
+        background-color: rgba(247, 28, 163, 0.63);
+    }
+
+    .header_row small {
+        display: inline-block;
+        margin: 5px 0 5px 1%;
+    }
+
+    .edit {
+        float: right;
+        margin: 5px 0;
+        /* padding: 2px; */
+        /* border-radius: 15%; */
+        transition: 0.2s;
+    }
+
+    .edit:hover {
+        float: right;
+        margin: 5px 0;
+        background-color: rgba(13, 168, 73, 0.63);
+        cursor: default;
+    }
+
+.section_container {
+    display: flex;
+    position: relative;
+    left: 10%;
+    width: 90%;
+    margin: 10px 0 30px 0;
+}
+
+    .section_label {
+        display: inline-block;
+        width: fit-content;
+        margin: 0;
+        border-right: 1px solid black;
+    }
+
+        .section_label h5 {
+            font-size: 1rem;
+            width: fit-content;
+            margin: 0;
+        }
+
+    .section_content {
+        display: inline-block;
+        position: relative;
+        width: 88%;
+        left: 2%;
+    }
+        .section_summary {
+            display: inline-block;
+            position: relative;
+            margin: 0 0 6px 0;
+        }
+
+        .entry_container {
+            display: flexbox;
+            position: relative;
+            left: 5%;
+            width: 95%;
+            margin: 1% 0 20px 0;
+        }
+
+            .entry_label {
+                width: 100%;
+                margin: 0;
+            }
+
+                .entry_label h6 {
+                    font-size: 0.75rem;
+                    margin: 0 0 4px 0;
+                }
+
+            .entry_content {
+                position: relative;
+                left: 10%;
+                width: 90%;
+                margin: 0;
+            }

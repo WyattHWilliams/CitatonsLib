@@ -75,7 +75,7 @@ function addEntForm(secIdx) {
 
     //append
     entFormsContainer.appendChild(newForm);
-    newForm.classList.add('entForm');
+    newForm.classList.add('entform');
     newForm.classList.remove('is-hidden');
 }
 
@@ -121,7 +121,7 @@ function addSecForm() {
 
     //append
     secFormsContainer.appendChild(newForm);
-    newForm.classList.add('secForm');
+    newForm.classList.add('secform');
     newForm.classList.remove('is-hidden');
 }
 

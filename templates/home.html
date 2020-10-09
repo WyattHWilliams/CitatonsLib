@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/display.css">
     <title>New Citation</title>
 </head>
 
@@ -13,7 +12,43 @@
     <h1>Welcome!</h1>
     <a href="/add_citation">New Citation</a>
     <hr>
-    <ul>
+    <div class="citations_list">
+        {% for cit in citations %}
+        <div class="citation_container">
+            <div class="header_row">
+                <h4>{{cit.title}}</h4>
+                <small>{{cit.author}}</small>
+                <small>{{cit.publisher}}</small>
+                <small>{{cit.yr_published}}</small>
+                <p class="edit"><a href="/edit/{{cit.id}}">[edit]</a></p>
+            </div>
+            <div class="summary_container">
+                {% for sec in cit.sections %}
+                <div class="section_container">
+                    <div class="section_label">
+                        <h5>Some Pages</h5>
+                    </div>
+                    <div class="section_content">
+                        <p class="section_summary">{{sec.sec_summary}}</p>
+                        <div class="entries_list">
+                            {% for ent in sec.entries %}
+                            <div class="entry_container">
+                                <div class="entry_label">
+                                    <h6>P{{ent.page_start}}:<small>{{ent.   paragraph_start}}</small> -
+                                        P{{ent.page_stop}}:<small>{{ent.paragraph_stop}}</small></h6>
+                                </div>
+                                <p class="entry_content">{{ent.content}}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- <ul>
         {% for cit in citations %}
         <li>
             <h6>{{cit.title}}</h6>
@@ -38,7 +73,7 @@
             {% endfor %}
         </li>
         {% endfor %}
-    </ul>
+    </ul> -->
 </body>
 
 </html>

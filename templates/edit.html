@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <form id="citation-form" action="/add_citation" method="POST" role="form">
+    <form id="citation-form" action="/edit/{{citation.id}}" method="POST" role="form">
         {{form.hidden_tag()}}
         <div class="form-inline">
             <div class="form-group">
