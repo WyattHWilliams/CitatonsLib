@@ -4,60 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/addForm.css">
     <title>New Citation</title>
 </head>
 
 <body>
     <form id="citation-form" action="/add_citation" method="POST" role="form">
         {{form.hidden_tag()}}
-        <div class="form-inline">
-            <div class="form-group">
-                <div class="p-1">{{form.title.label}}</div>
-                <div class="p-1">{{form.title}}</div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_label">{{form.title.label}}</div>
+                <div class="form_field">{{form.title}}</div>
             </div>
-            <div class="form-group">
-                <div class="p-1">{{form.volume.label}}</div>
-                <div class="p-1">{{form.volume}}</div>
+            <div class="form_group">
+                <div class="form_label">{{form.volume.label}}</div>
+                <div class="form_field">{{form.volume}}</div>
             </div>
-            <div class="form-group">
-                <div class="p-1">{{form.edition.label}}</div>
-                <div class="p-1">{{form.edition}}</div>
-            </div>
-        </div>
-        <div class="form-inline">
-            <div class="form-group">
-                <div class="p-1">{{form.author.label}}</div>
-                <div class="p-1">{{form.author}}</div>
-            </div>
-            <div class="form-group">
-                <div class="p-1">{{form.publisher.label}}</div>
-                <div class="p-1">{{form.publisher}}</div>
-            </div>
-            <div class="form-group">
-                <div class="p-1">{{form.yr_published.label}}</div>
-                <div class="p-1">{{form.yr_published}}</div>
+            <div class="form_group">
+                <div class="form_label">{{form.edition.label}}</div>
+                <div class="form_field">{{form.edition}}</div>
             </div>
         </div>
-        <div class="form-inline">
-            <div class="form-group">
-                <div class="p-1">{{form.url.label}}</div>
-                <div class="p-1">{{form.url}}</div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_label">{{form.author.label}}</div>
+                <div class="form_field">{{form.author}}</div>
             </div>
-            <div class="form-group">
-                <div class="p-1">{{form.lccn.label}}</div>
-                <div class="p-1">{{form.lccn}}</div>
+            <div class="form_group">
+                <div class="form_label">{{form.publisher.label}}</div>
+                <div class="form_field">{{form.publisher}}</div>
+            </div>
+            <div class="form_group">
+                <div class="form_label">{{form.yr_published.label}}</div>
+                <div class="form_field">{{form.yr_published}}</div>
             </div>
         </div>
-        <div class="form-inline">
-            <div class="form-group">
-                <div class="p-1">{{form.yr_accessed.label}}</div>
-                <div class="p-1">{{form.yr_accessed}}</div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_label">{{form.url.label}}</div>
+                <div class="form_field">{{form.url}}</div>
             </div>
-            <div class="form-group">
-                <div class="p-1">{{form.summary_status.label}}</div>
-                <div class="p-1">{{form.summary_status}}</div>
+            <div class="form_group">
+                <div class="form_label">{{form.lccn.label}}</div>
+                <div class="form_field">{{form.lccn}}</div>
+            </div>
+        </div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_label">{{form.yr_accessed.label}}</div>
+                <div class="form_field">{{form.yr_accessed}}</div>
+            </div>
+            <div class="form_group">
+                <div class="">{{form.summary_status.label}}</div>
+                <div class="">{{form.summary_status}}</div>
             </div>
         </div>
         <hr>
@@ -70,6 +69,8 @@
                 <!---->
                 {% for section_form in form.sections %}
                 <div id="section-{{ loop.index0 }}" class="secform" data-index="{{ loop.index0 }}">
+                    {{ section_form.sec_title.label }}
+                    {{ section_form.sec_title }}
 
                     <a class="add_ent" href="#">Add Entry</a>
 
@@ -145,6 +146,9 @@
     </div>
 
     <div id="section-^" class="is-hidden" data-index="^">
+
+        <label for="sections-^-sec_title">Section Title</label>
+        <input id="sections-^-sec_title" name="sections-^-sec_title" required="" type="text" value="">
 
         <a class="add_ent" href="#">Add Entry</a>
 

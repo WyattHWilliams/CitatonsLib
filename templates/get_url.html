@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="row align-items-left m-4">
+        <h1>Enter URL</h1>
+        <form action="/add_wiki/url" method="POST">
+            {% for err in form.errors %}
+            <p>{{err}}</p>
+            {% endfor %}
+            {{form.hidden_tag()}}
+            {% for field in form if field.widget.input_type != 'hidden' %}
+            <p>
+                {{field}}
+            </p>
+            {% endfor %}
+            <button>Submit</button>
+        </form>
+    </div>
+</body>
+
+</html>

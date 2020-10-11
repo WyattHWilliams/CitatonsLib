@@ -10,23 +10,27 @@
 
 <body>
     <h1>Welcome!</h1>
-    <a href="/add_citation">New Citation</a>
+    <a href="/add_citation">New Blank Citation</a>
+    <a href="/add_wiki/url">New Wiki Citation</a>
     <hr>
     <div class="citations_list">
         {% for cit in citations %}
         <div class="citation_container">
             <div class="header_row">
                 <h4>{{cit.title}}</h4>
-                <small>{{cit.author}}</small>
-                <small>{{cit.publisher}}</small>
-                <small>{{cit.yr_published}}</small>
                 <p class="edit"><a href="/edit/{{cit.id}}">[edit]</a></p>
+            </div>
+            <div class="header_row">
+                <small>Author: {{cit.author}} |</small>
+                <small>Pubisher: {{cit.publisher}} |</small>
+                <small>Year: {{cit.yr_published}} |</small>
+                <small>Accessed: {{cit.yr_accessed}}</small>
             </div>
             <div class="summary_container">
                 {% for sec in cit.sections %}
                 <div class="section_container">
                     <div class="section_label">
-                        <h5>Some Pages</h5>
+                        <h5>{{sec.sec_title}}</h5>
                     </div>
                     <div class="section_content">
                         <p class="section_summary">{{sec.sec_summary}}</p>

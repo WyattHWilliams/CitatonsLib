@@ -1,10 +1,12 @@
 # ----- [///// IMPORTS /////] -----
+import datetime
 from itertools import zip_longest
+from wiki import check_wiki_exist, fetch_wiki_data, make_printable, excluded_sections
 from flask import Flask, request, render_template, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from config import app, db
-from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm
+from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm, WikiUrlForm
 from wtforms import SubmitField
 
 
@@ -56,14 +58,11 @@ def main():
         db.session.add(new_citation)
 
         for section in form.sections.data:
-            print('***********************')
-            print(section)
-            new_section = Section(sec_summary=section['sec_summary'])
+            new_section = Section(sec_summary=section['sec_summary'],
+                                  sec_title=section['sec_title'])
             db.session.add(new_section)
 
             for entry in section['entries']:
-                print('************************')
-                print(entry)
                 new_entry = Entry(page_start=entry['page_start'],
                                   paragraph_start=entry['paragraph_start'],
                                   page_stop=entry['page_stop'],
@@ -78,6 +77,66 @@ def main():
         citations = Citation.query
 
         return redirect('/')
+
+    return render_template('new.html', form=form)
+
+
+@app.route('/add_wiki/url', methods=['GET', 'POST'])
+def get_wiki_url():
+    form = WikiUrlForm()
+
+    if form.validate_on_submit():
+        session['wikiPage'] = form.url.data.split('/')[-1]
+        if check_wiki_exist(session['wikiPage']) == True:
+            return redirect('/add_wiki')
+        else:
+            error = 'Wiki page does not exist'
+            return render_template('get_url.html', form=form, error=error)
+
+    return render_template('get_url.html', form=form)
+
+
+@app.route('/add_wiki', methods=['GET', 'POST'])
+def add_wiki():
+    page = fetch_wiki_data(session['wikiPage'])
+    new_citation = Citation(title=make_printable(page.title),
+                            publisher='Wikipedia',
+                            url=page.fullurl,
+                            yr_accessed=datetime.datetime.now().strftime('%Y'))
+    db.session.add(new_citation)
+
+    for page_section in page.sections:
+        if page_section.title in excluded_sections:
+            continue
+        if len(page_section.sections) != 0:
+            for subsection in page_section.sections:
+                new_section = Section(
+                    sec_title=make_printable(page_section.title) + ': ' + make_printable(subsection.title))
+                db.session.add(new_section)
+
+                text = subsection.text.split('. ')
+                for sentence in text:
+                    new_entry = Entry(content=make_printable(sentence) + '.')
+                    db.session.add(new_entry)
+                    new_section.entries.append(new_entry)
+
+                new_citation.sections.append(new_section)
+
+        else:
+            new_section = Section(sec_title=make_printable(page_section.title))
+            db.session.add(new_section)
+
+            text = page_section.text.split('. ')
+            for sentence in text:
+                new_entry = Entry(content=make_printable(sentence) + '.')
+                db.session.add(new_entry)
+                new_section.entries.append(new_entry)
+
+            new_citation.sections.append(new_section)
+
+    db.session.flush()
+    cit = Citation.query.get_or_404(new_citation.id)
+    form = NewCitationForm(obj=cit)
 
     return render_template('new.html', form=form)
 
@@ -101,7 +160,8 @@ def edit_citation(cit_id):
 
         for sec, section in zip_longest(cit.sections, form.sections.data, fillvalue=None):
             if sec == None:
-                new_section = Section(sec_summary=section['sec_summary'])
+                new_section = Section(sec_summary=section['sec_summary'],
+                                      sec_title=section['sec_title'])
                 db.session.add(new_section)
 
                 for entry in section['entries']:
@@ -115,8 +175,12 @@ def edit_citation(cit_id):
 
                 cit.sections.append(new_section)
 
+            elif section == None:
+                db.session.delete(sec)
+
             else:
                 sec.sec_summary = section['sec_summary']
+                sec.sec_title = section['sec_title']
 
                 for ent, entry in zip_longest(sec.entries, section['entries'], fillvalue=None):
                     if ent == None:
@@ -127,6 +191,9 @@ def edit_citation(cit_id):
                                           content=entry['content'])
                         db.session.add(new_entry)
                         sec.entries.append(new_entry)
+
+                    elif entry == None:
+                        db.session.delete(ent)
 
                     else:
                         ent.page_start = entry['page_start']

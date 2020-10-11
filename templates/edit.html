@@ -70,6 +70,8 @@
                 <!---->
                 {% for section_form in form.sections %}
                 <div id="section-{{ loop.index0 }}" class="secform" data-index="{{ loop.index0 }}">
+                    {{ section_form.sec_title.label }}
+                    {{ section_form.sec_title }}
 
                     <a class="add_ent" href="#">Add Entry</a>
 
@@ -145,6 +147,9 @@
     </div>
 
     <div id="section-^" class="is-hidden" data-index="^">
+
+        <label for="sections-^-sec_title">Section Summary</label>
+        <input id="sections-^-sec_title" name="sections-^-sec_title" required="" type="text" value="">
 
         <a class="add_ent" href="#">Add Entry</a>
 

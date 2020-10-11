@@ -1,7 +1,7 @@
 # ----- [///// IMPORTS /////] -----
 from flask_wtf import FlaskForm
 from wtforms import Form, StringField, SelectField, FormField, IntegerField, FieldList, SubmitField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, Optional
 from config import app, db
 
 
@@ -43,12 +43,13 @@ class Section(db.Model):
     parent_citation_id = db.Column(db.Integer,
                                    db.ForeignKey('citations.id'),
                                    nullable=False)
+    sec_title = db.Column(db.Text)
     sec_summary = db.Column(db.Text)
     # entries = db.relationship('Entry', backref='sections')
 
     # relationships
     citation = db.relationship('Citation', backref=db.backref(
-        'sections', lazy='dynamic', collection_class=list))
+        'sections',  cascade="all,delete", lazy='dynamic', collection_class=list))
 
 
 class Entry(db.Model):
@@ -57,10 +58,14 @@ class Entry(db.Model):
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
-    page_start = db.Column(db.Text)
-    paragraph_start = db.Column(db.Text)
-    page_stop = db.Column(db.Text)
-    paragraph_stop = db.Column(db.Text)
+    page_start = db.Column(db.Text,
+                           default=0)
+    paragraph_start = db.Column(db.Text,
+                                default=0)
+    page_stop = db.Column(db.Text,
+                          default=0)
+    paragraph_stop = db.Column(db.Text,
+                               default=0)
     content = db.Column(db.Text)
     parent_section_id = db.Column(db.Integer,
                                   db.ForeignKey('sections.id'),
@@ -68,20 +73,21 @@ class Entry(db.Model):
 
     # relationships
     section = db.relationship('Section', backref=db.backref(
-        'entries', lazy='dynamic', collection_class=list))
+        'entries',  cascade="all,delete", lazy='dynamic', collection_class=list))
     # referenced_citations = db.relationship('Citation', backref='entries')
 
 
 class NewEntryForm(Form):
-    page_start = IntegerField('From Page')
-    paragraph_start = IntegerField('Paragraph')
-    page_stop = IntegerField('To Page')
-    paragraph_stop = IntegerField('Paragraph')
+    page_start = IntegerField('From Page', validators=[Optional()])
+    paragraph_start = IntegerField('Paragraph', validators=[Optional()])
+    page_stop = IntegerField('To Page', validators=[Optional()])
+    paragraph_stop = IntegerField('Paragraph', validators=[Optional()])
     content = StringField('Entry')
 
 
 class NewSectionForm(Form):
-    sec_summary = StringField('Section Summary', validators=[InputRequired()])
+    sec_title = StringField('Section Title', validators=[InputRequired()])
+    sec_summary = StringField('Section Summary')
     entries = FieldList(FormField(NewEntryForm), min_entries=0)
     # entry_form = FormField(NewEntryForm)
 
@@ -92,12 +98,16 @@ class NewCitationForm(FlaskForm):
     edition = StringField('Edition')
     author = StringField('Author')
     publisher = StringField('Publisher')
-    yr_published = IntegerField('Year Published')
+    yr_published = IntegerField('Year Published', validators=[Optional()])
     url = StringField('URL')
     lccn = StringField('Library of Congress Call Number')
-    yr_accessed = IntegerField('Year First Accessed')
+    yr_accessed = IntegerField('Year First Accessed', validators=[Optional()])
     summary_status = SelectField('Summary Status', choices=[
                                  (s, s) for s in Citation.sum_states])
     sections = FieldList(FormField(NewSectionForm),
                          min_entries=0)
     # section_form = FormField(NewSectionForm)
+
+
+class WikiUrlForm(FlaskForm):
+    url = StringField('URL', validators=[InputRequired()])

@@ -1,0 +1,30 @@
+.is-hidden {
+    display: none;
+}
+
+.form_line {
+    width: 100%;
+}
+
+    .form_group {
+        display: inline-block;
+        width: 20%;
+    }
+
+        .form_label {
+            display: inline-block;
+            z-index: 1;
+        }
+
+        .form_field {
+            display: inline-block;
+            width: 300px;
+            background: transparent;
+            z-index: 2;
+        }
+
+            .input {
+                width: 300px;
+                background: transparent;
+                z-index: 3;
+            }
