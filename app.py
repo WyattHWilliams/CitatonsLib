@@ -6,8 +6,10 @@ from flask import Flask, request, render_template, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from config import app, db
-from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm, WikiUrlForm
+from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm, WikiUrlForm, Tag
 from wtforms import SubmitField
+
+from nlp import find_entities
 
 
 # ----- [///// FUNCTIONS /////] -----
@@ -74,7 +76,6 @@ def main():
             new_citation.sections.append(new_section)
 
         db.session.commit()
-        citations = Citation.query
 
         return redirect('/')
 
@@ -104,6 +105,8 @@ def add_wiki():
                             url=page.fullurl,
                             yr_accessed=datetime.datetime.now().strftime('%Y'))
     db.session.add(new_citation)
+    curr_tags = db.session.query(Tag.name).all()
+    tag_list = {}
 
     for page_section in page.sections:
         if page_section.title in excluded_sections:
@@ -116,8 +119,32 @@ def add_wiki():
 
                 text = subsection.text.split('. ')
                 for sentence in text:
-                    new_entry = Entry(content=make_printable(sentence) + '.')
+                    printable_sentence = make_printable(sentence) + '.'
+                    new_entry = Entry(content=printable_sentence)
                     db.session.add(new_entry)
+
+                    for ent in find_entities(printable_sentence):
+                        print('#############################')
+                        print(ent)
+                        if ent in curr_tags:
+                            print('**********************************')
+                            print('tag in database')
+                            new_tag = Tag.query(ent)
+                            new_tag.entries.append(new_entry)
+                            # new_entry.tags.append(new_tag)
+                        elif ent in tag_list:
+                            print('**********************************')
+                            print('tag added this session')
+                            new_tag = tag_list[ent]
+                            new_tag.entries.append(new_entry)
+                            # new_entry.tags.append(new_tag)
+                        else:
+                            new_tag = Tag(name=ent)
+                            tag_list[ent] = new_tag
+                            db.session.add(new_tag)
+                            new_tag.entries.append(new_entry)
+                            # new_entry.tags.append(new_tag)
+
                     new_section.entries.append(new_entry)
 
                 new_citation.sections.append(new_section)
@@ -128,8 +155,32 @@ def add_wiki():
 
             text = page_section.text.split('. ')
             for sentence in text:
-                new_entry = Entry(content=make_printable(sentence) + '.')
+                printable_sentence = make_printable(sentence) + '.'
+                new_entry = Entry(content=printable_sentence)
                 db.session.add(new_entry)
+
+                for ent in find_entities(printable_sentence):
+                    print('#############################')
+                    print(ent)
+                    if ent in curr_tags:
+                        print('**********************************')
+                        print('tag in database')
+                        new_tag = Tag.query(ent)
+                        new_tag.entries.append(new_entry)
+                        # new_entry.tags.append(new_tag)
+                    elif ent in tag_list:
+                        print('**********************************')
+                        print('tag added this session')
+                        new_tag = tag_list[ent]
+                        new_tag.entries.append(new_entry)
+                        # new_entry.tags.append(new_tag)
+                    else:
+                        new_tag = Tag(name=ent)
+                        tag_list[ent] = new_tag
+                        db.session.add(new_tag)
+                        new_tag.entries.append(new_entry)
+                        # new_entry.tags.append(new_tag)
+
                 new_section.entries.append(new_entry)
 
             new_citation.sections.append(new_section)

@@ -1,3 +1,7 @@
+.is-hidden {
+    display: none;
+}
+
 .citations_list {
     position: relative;
     left: 50%;
@@ -23,6 +27,9 @@
         margin: 5px 0;
         padding: 2px 4px 2px 4px;
     }
+        .header_row h4 input {
+            width: 80%;
+        }
 
     .header_row small {
         /* display: inline-block; */
@@ -30,6 +37,10 @@
         flex-grow: 1;
         margin: 5px 0 5px 0;
     }
+
+        .header_row small input {
+            width: 80%;
+        }
 
     .edit {
         float: right;
@@ -46,7 +57,7 @@
         cursor: default;
     }
 
-.section_container {
+.secform {
     display: flex;
     position: relative;
     left: 10%;
@@ -79,7 +90,7 @@
             margin: 0 0 6px 0;
         }
 
-        .entry_container {
+        .entform {
             display: flexbox;
             position: relative;
             left: 5%;
@@ -106,7 +117,6 @@
 
 
 input {
-    width: 80%;
     font-size: inherit;
     font-size: inherit;
     font-family: inherit;

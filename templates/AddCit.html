@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/formDisplay.css">
+    <title>New Citation</title>
+</head>
+
+<body>
+    <form id="citation-form" action="/add_citation" method="POST" role="form">
+        {{form.hidden_tag()}}
+        <div class="citation_container">
+            <div class="header_row">
+                <h4>{{ form.title }}</h4>
+            </div>
+            <div class="header_row">
+                <small>Author: {{form.author}} |</small>
+                <small>Pubisher: {{form.publisher}} |</small>
+                <small>Year: {{form.yr_published}} |</small>
+                <small>Accessed: {{form.yr_accessed}}</small>
+            </div>
+            <div class="header_row">
+                <small>Volume: {{form.volume}} |</small>
+                <small>Edition: {{form.edition}} |</small>
+                <small>lccn: {{form.lccn}} |</small>
+                <small>Summary Status: {{form.summary_status}}</small>
+            </div>
+            <div class="header_row">
+                <small>URL: {{form.url}} |</small>
+            </div>
+
+            <div class="summary_container">
+
+                <div id="secforms-container">
+                    {% for sec in form.sections %}
+                    <div id="section-{{ loop.index0 }}" class="secform" data-index="{{ loop.index0 }}">
+                        <div class="section_label">
+                            <h5>{{sec.sec_title}}</h5>
+                        </div>
+                        <div class="section_content">
+                            <p class="section_summary">{{sec.sec_summary}}</p>
+                            <div id="entforms-container-{{ loop.index0 }}">
+
+                                {% for ent in sec.entries %}
+                                <div id="section-{{ loop.index0 }}-entry-{{ loop.index0 }}" class="entform"
+                                    data-index="{{ loop.index0 }}">
+                                    <div class="entry_label">
+                                        <h6>{{ent.page_start}}:<small>{{ent.   paragraph_start}}</small> -
+                                            {{ent.page_stop}}:<small>{{ent.paragraph_stop}}</small></h6>
+                                    </div>
+                                    <p class="entry_content">{{ent.content}}</p>
+                                    <a class="remove_ent" href="#">Remove</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <a class="add_ent" href="#">Add Entry</a>
+                        </div>
+
+                        <a class="remove_sec" href="#">Remove</a>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+                <a class="add_sec" href="#">Add Section</a>
+            </div>
+
+    </form>
+
+    <!-- TEMPLATES -->
+
+    <div id="section-^" class="is-hidden" data-index="^">
+        <div class="section_label">
+            <h5>
+                <input id="sections-^-sec_title" name="sections-^-sec_title" required="" type="text" value="">
+            </h5>
+        </div>
+        <div class="section_content">
+            <p class="section_summary">
+                <input id="sections-^-sec_summary" name="sections-^-sec_summary" required="" type="text" value="">
+            </p>
+            <div id="entforms-container-^" class="entforms-cont">
+            </div>
+            <a class="add_ent" href="#">Add Entry</a>
+        </div>
+
+        <a class="remove_sec" href="#">Remove</a>
+    </div>
+
+    <div id="section-^-entry-*" class="is-hidden" data-index="*">
+        <div class="entry_label">
+            <h6>
+                <input id="sections-^-entries-*-page_start" name="sections-^-entries-*-page_start" type="text"
+                    value="">:<small>
+                    <input id="sections-^-entries-*-paragraph_start" name="sections-^-entries-*-paragraph_start"
+                        type="text" value="">
+                </small> -
+                <input id="sections-^-entries-*-page_stop" name="sections-^-entries-*-page_stop" type="text"
+                    value="">:<small>
+                    <input id="sections-^-entries-*-paragraph_stop" name="sections-^-entries-*-paragraph_stop"
+                        type="text" value="">
+                </small></h6>
+        </div>
+        <p class="entry_content">
+            <input id="sections-^-entries-*-content" name="sections-^-entries-*-content" required="" type="text"
+                value="">
+        </p>
+        <a class="remove_ent" href="#">Remove</a>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="/static/AddCit.js"></script>
+
+</body>
+
+</html>

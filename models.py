@@ -5,6 +5,17 @@ from wtforms.validators import InputRequired, Optional
 from config import app, db
 
 
+class AssignedTag(db.Model):
+    __tablename__ = 'assigned_tags'
+
+    entry_id = db.Column('id', db.Integer,
+                         db.ForeignKey('entries.id'),
+                         primary_key=True)
+    tag_name = db.Column('name', db.Text,
+                         db.ForeignKey('tags.name'),
+                         primary_key=True)
+
+
 class Citation(db.Model):
     __tablename__ = 'citations'
     sum_states = ['Not Started', 'In Progress', 'Complete']
@@ -73,27 +84,53 @@ class Entry(db.Model):
 
     # relationships
     section = db.relationship('Section', backref=db.backref(
-        'entries',  cascade="all,delete", lazy='dynamic', collection_class=list))
+        'entries', cascade="all,delete", lazy='dynamic', collection_class=list))
+    # tags = db.relationship('Tag', secondary='assigned_tags',
+    #                        backref='entries', cascade="all,delete")
     # referenced_citations = db.relationship('Citation', backref='entries')
 
 
+class Tag(db.Model):
+    __tablename__ = 'tags'
+
+    name = db.Column(db.Text,
+                     primary_key=True,
+                     unique=True,
+                     nullable=False)
+    entries = db.relationship('Entry', secondary='assigned_tags',
+                              backref=db.backref(
+                                  'tags', cascade="all,delete", lazy='dynamic', collection_class=list))
+
+
+class NewTagForm(Form):
+    name = StringField('Tag', validators=[InputRequired()])
+
+
 class NewEntryForm(Form):
-    page_start = IntegerField('From Page', validators=[Optional()])
-    paragraph_start = IntegerField('Paragraph', validators=[Optional()])
-    page_stop = IntegerField('To Page', validators=[Optional()])
-    paragraph_stop = IntegerField('Paragraph', validators=[Optional()])
+    page_start = IntegerField('From Page', validators=[Optional()], render_kw={
+        "placeholder": "Pg."})
+    paragraph_start = IntegerField('Paragraph', validators=[Optional()], render_kw={
+        "placeholder": "pr."})
+    page_stop = IntegerField('To Page', validators=[Optional()], render_kw={
+        "placeholder": "Pg."})
+    paragraph_stop = IntegerField('Paragraph', validators=[Optional()], render_kw={
+        "placeholder": "pr."})
     content = StringField('Entry')
+    tags = FieldList(FormField(NewTagForm), min_entries=0)
 
 
 class NewSectionForm(Form):
-    sec_title = StringField('Section Title', validators=[InputRequired()])
-    sec_summary = StringField('Section Summary')
+    sec_title = StringField('Section Title', validators=[InputRequired()], render_kw={
+        "placeholder": "Section Title"})
+    sec_summary = StringField('Section Summary', render_kw={
+        "placeholder": "Seciton Summary"})
     entries = FieldList(FormField(NewEntryForm), min_entries=0)
     # entry_form = FormField(NewEntryForm)
 
 
 class NewCitationForm(FlaskForm):
-    title = StringField('Title', validators=[InputRequired()])
+    title = StringField('Title', validators=[InputRequired()], render_kw={
+                        "placeholder": "Title"})
     volume = StringField('Volume')
     edition = StringField('Edition')
     author = StringField('Author')

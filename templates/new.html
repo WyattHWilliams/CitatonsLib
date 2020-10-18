@@ -13,56 +13,57 @@
         {{form.hidden_tag()}}
         <div class="form_line">
             <div class="form_group">
-                <div class="form_label">{{form.title.label}}</div>
                 <div class="form_field">{{form.title}}</div>
+                <div class="form_label">{{form.title.label}}</div>
             </div>
             <div class="form_group">
-                <div class="form_label">{{form.volume.label}}</div>
                 <div class="form_field">{{form.volume}}</div>
+                <div class="form_label">{{form.volume.label}}</div>
             </div>
             <div class="form_group">
-                <div class="form_label">{{form.edition.label}}</div>
                 <div class="form_field">{{form.edition}}</div>
+                <div class="form_label">{{form.edition.label}}</div>
             </div>
         </div>
         <div class="form_line">
             <div class="form_group">
-                <div class="form_label">{{form.author.label}}</div>
                 <div class="form_field">{{form.author}}</div>
+                <div class="form_label">{{form.author.label}}</div>
             </div>
             <div class="form_group">
-                <div class="form_label">{{form.publisher.label}}</div>
                 <div class="form_field">{{form.publisher}}</div>
+                <div class="form_label">{{form.publisher.label}}</div>
             </div>
             <div class="form_group">
-                <div class="form_label">{{form.yr_published.label}}</div>
                 <div class="form_field">{{form.yr_published}}</div>
+                <div class="form_label">{{form.yr_published.label}}</div>
             </div>
         </div>
         <div class="form_line">
             <div class="form_group">
-                <div class="form_label">{{form.url.label}}</div>
-                <div class="form_field">{{form.url}}</div>
-            </div>
-            <div class="form_group">
-                <div class="form_label">{{form.lccn.label}}</div>
                 <div class="form_field">{{form.lccn}}</div>
+                <div class="form_label">{{form.lccn.label}}</div>
+            </div>
+            <div class="form_group">
+                <div class="form_field">{{form.yr_accessed}}</div>
+                <div class="form_label">{{form.yr_accessed.label}}</div>
+
+            </div>
+            <div class="form_group">
+                <div class="sum_label">{{form.summary_status.label}}</div>
+                <div class="sum_field">{{form.summary_status}}</div>
             </div>
         </div>
         <div class="form_line">
             <div class="form_group">
-                <div class="form_label">{{form.yr_accessed.label}}</div>
-                <div class="form_field">{{form.yr_accessed}}</div>
-            </div>
-            <div class="form_group">
-                <div class="">{{form.summary_status.label}}</div>
-                <div class="">{{form.summary_status}}</div>
+                <div class="form_field">{{form.url}}</div>
+                <div class="form_label">{{form.url.label}}</div>
             </div>
         </div>
         <hr>
         <div id="summary">
 
-            <a class="add_sec" href="#">Add Section</a>
+
 
             {# Show all subforms #}
             <div id="secforms-container">
@@ -95,6 +96,10 @@
                             {{ entry.content.label }}
                             {{ entry.content }}
 
+                            {% for tag in entry.tags %}
+                            <p>{{tag.name.label}}</p>
+                            {% endfor %}
+
                             <a class="remove_ent" href="#">Remove</a>
                         </div>
                         {% endfor %}
@@ -108,6 +113,8 @@
                 {% endfor %}
             </div>
 
+            <a class="add_sec" href="#">Add Section</a>
+
             {% if form.errors %}
             {{ form.errors }}
             {% endif %}
@@ -120,7 +127,7 @@
             </p>
             {% endif %}
         </div>
-        <button type="submit">Save</button>
+        <button class="save_btn" type="submit">Save</button>
     </form>
 
     <!-- TEMPLATES -->

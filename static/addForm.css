@@ -9,22 +9,51 @@
     .form_group {
         display: inline-block;
         width: 20%;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
         .form_label {
-            display: inline-block;
-            z-index: 1;
+            display: block;
         }
 
         .form_field {
-            display: inline-block;
+            display: block;
             width: 300px;
             background: transparent;
-            z-index: 2;
         }
 
-            .input {
+            input {
                 width: 300px;
-                background: transparent;
-                z-index: 3;
+                background-color: transparent;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+                transition: 0.75s;
             }
+
+            input:focus {
+                background-color: rgba(0, 0, 0, 0.05);
+                border-bottom: 1px solid rgb(255, 0, 191);
+            }
+            
+
+        .sum_label {
+            display: inline-block;
+        }
+
+        .sum_field {
+            display: inline-block;
+        }
+
+.save_btn {
+    width: 25%;
+    background: rgb(106, 255, 156);
+    border: 0px;
+    transition: .25s;
+}
+
+.save_btn:hover {
+    background: rgb(0, 255, 42);
+}
