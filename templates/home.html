@@ -12,72 +12,79 @@
     <h1>Welcome!</h1>
     <a href="/add_citation">New Blank Citation</a>
     <a href="/add_wiki/url">New Wiki Citation</a>
+    <form action="/" method="POST">
+        {{form.hidden_tag()}}
+        {{form.search.label}}
+        {{form.search}}
+
+        <button>Submit</button>
+    </form>
     <hr>
-    <div class="citations_list">
-        {% for cit in citations %}
-        <div class="citation_container">
-            <div class="header_row">
-                <h4>{{cit.title}}</h4>
-                <p class="edit"><a href="/edit/{{cit.id}}">[edit]</a></p>
-            </div>
-            <div class="header_row">
-                <small>Author: {{cit.author}} |</small>
-                <small>Pubisher: {{cit.publisher}} |</small>
-                <small>Year: {{cit.yr_published}} |</small>
-                <small>Accessed: {{cit.yr_accessed}}</small>
-            </div>
-            <div class="summary_container">
-                {% for sec in cit.sections %}
-                <div class="section_container">
-                    <div class="section_label">
-                        <h5>{{sec.sec_title}}</h5>
-                    </div>
-                    <div class="section_content">
-                        <p class="section_summary">{{sec.sec_summary}}</p>
-                        <div class="entries_list">
-                            {% for ent in sec.entries %}
-                            <div class="entry_container">
-                                <div class="entry_label">
-                                    <h6>P{{ent.page_start}}:<small>{{ent.   paragraph_start}}</small> -
-                                        P{{ent.page_stop}}:<small>{{ent.paragraph_stop}}</small></h6>
+    <div class="container">
+
+        <div class="text_editor_container">
+
+        </div>
+
+
+        <div class="citations_list">
+            {% for cit in citations %}
+            <div class="citation_container">
+                <div class="header_row">
+                    <h4>{{cit.title}}</h4>
+                    <p class="edit"><a href="/edit/{{cit.id}}">[edit]</a></p>
+                </div>
+                <div class="header_row">
+                    <small>Author: {{cit.author}} |</small>
+                    <small>Pubisher: {{cit.publisher}} |</small>
+                    <small>Year: {{cit.yr_published}} |</small>
+                    <small>Accessed: {{cit.yr_accessed}}</small>
+                </div>
+                <div class="summary_container">
+                    {% for sec in cit.sections %}
+                    <div class="section_container">
+                        <div class="section_label">
+                            <h5>{{sec.sec_title}}</h5>
+                        </div>
+                        <div class="section_content">
+                            <p class="section_summary">{{sec.sec_summary}}</p>
+                            <div class="entries_list">
+                                {% for ent in sec.entries %}
+                                <div class="entry_container">
+                                    <div class="entry_label">
+                                        <h6>P{{ent.page_start}}:<small>{{ent.   paragraph_start}}</small> -
+                                            P{{ent.page_stop}}:<small>{{ent.paragraph_stop}}</small></h6>
+                                    </div>
+                                    <p class="entry_content">{{ent.content}}</p>
                                 </div>
-                                <p class="entry_content">{{ent.content}}</p>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
                         </div>
                     </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <div class="search_results_container">
+            <h3>Search Results</h3>
+            <div class="search_results_list">
+
+                {% for result in search_results %}
+                <hr>
+                <div class="entry_container">
+                    <div class="entry_label">
+                        <h6>P{{result.page_start}}:<small>{{result.   paragraph_start}}</small> -
+                            P{{result.page_stop}}:<small>{{result.paragraph_stop}}</small></h6>
+                    </div>
+                    <p class="entry_content">{{result.content}}</p>
                 </div>
                 {% endfor %}
             </div>
         </div>
-        {% endfor %}
     </div>
-    <!-- <ul>
-        {% for cit in citations %}
-        <li>
-            <h6>{{cit.title}}</h6>
-            <div class="row">
-                <small class="p-2">{{cit.author}}</small>
-                <small class="p-2"> | </small>
-                <small class="p-2">{{cit.publisher}}</small>
-                <small class="p-2"> | </small>
-                <small class="p-2">{{cit.yr_published}}</small>
-            </div>
-            {% for sec in cit.sections %}
-            <p>{{sec.sec_summary}}</p>
-            <ul>
-                {% for ent in sec.entries %}
-                <div class="row">
-                    <small>pg. {{ent.page_start}}--</small>
-                    <small>pg. {{ent.page_stop}}</small>
-                </div>
-                <p>{{ent.content}}</p>
-                {% endfor %}
-            </ul>
-            {% endfor %}
-        </li>
-        {% endfor %}
-    </ul> -->
 </body>
 
 </html>

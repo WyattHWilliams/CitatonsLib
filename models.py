@@ -5,17 +5,6 @@ from wtforms.validators import InputRequired, Optional
 from config import app, db
 
 
-class AssignedTag(db.Model):
-    __tablename__ = 'assigned_tags'
-
-    entry_id = db.Column('id', db.Integer,
-                         db.ForeignKey('entries.id'),
-                         primary_key=True)
-    tag_name = db.Column('name', db.Text,
-                         db.ForeignKey('tags.name'),
-                         primary_key=True)
-
-
 class Citation(db.Model):
     __tablename__ = 'citations'
     sum_states = ['Not Started', 'In Progress', 'Complete']
@@ -90,22 +79,6 @@ class Entry(db.Model):
     # referenced_citations = db.relationship('Citation', backref='entries')
 
 
-class Tag(db.Model):
-    __tablename__ = 'tags'
-
-    name = db.Column(db.Text,
-                     primary_key=True,
-                     unique=True,
-                     nullable=False)
-    entries = db.relationship('Entry', secondary='assigned_tags',
-                              backref=db.backref(
-                                  'tags', cascade="all,delete", lazy='dynamic', collection_class=list))
-
-
-class NewTagForm(Form):
-    name = StringField('Tag', validators=[InputRequired()])
-
-
 class NewEntryForm(Form):
     page_start = IntegerField('From Page', validators=[Optional()], render_kw={
         "placeholder": "Pg."})
@@ -116,7 +89,6 @@ class NewEntryForm(Form):
     paragraph_stop = IntegerField('Paragraph', validators=[Optional()], render_kw={
         "placeholder": "pr."})
     content = StringField('Entry')
-    tags = FieldList(FormField(NewTagForm), min_entries=0)
 
 
 class NewSectionForm(Form):
@@ -148,3 +120,7 @@ class NewCitationForm(FlaskForm):
 
 class WikiUrlForm(FlaskForm):
     url = StringField('URL', validators=[InputRequired()])
+
+
+class SearchForm(FlaskForm):
+    search = StringField('Search')

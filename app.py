@@ -6,10 +6,8 @@ from flask import Flask, request, render_template, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from config import app, db
-from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm, WikiUrlForm, Tag
+from models import Citation, Section, Entry, NewCitationForm, NewEntryForm, NewSectionForm, WikiUrlForm, SearchForm
 from wtforms import SubmitField
-
-from nlp import find_entities
 
 
 # ----- [///// FUNCTIONS /////] -----
@@ -24,13 +22,31 @@ create_models()
 
 
 # ----- [///// ROUTES /////] -----
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     citations = Citation.query.all()
-    return render_template('home.html', citations=citations)
+    form = SearchForm()
+
+    if form.validate_on_submit():
+        search = form.search.data
+        search_params = search.split()
+        results = []
+        r1 = db.session.query(Entry).filter(
+            Entry.content.like(f'%{search_params[0]}%'))
+        r2 = db.session.query(Entry).filter(
+            Entry.content.like(f'%{search_params[0].capitalize()}%'))
+
+        for r in r1:
+            results.append(r)
+        for r in r2:
+            results.append(r)
+
+        return render_template('home.html', form=form, citations=citations, search_results=results)
+    else:
+        return render_template('home.html', form=form, citations=citations)
 
 
-@app.route('/add_citation', methods=['GET', 'POST'])
+@ app.route('/add_citation', methods=['GET', 'POST'])
 def main():
     form = NewCitationForm()
 
@@ -82,7 +98,7 @@ def main():
     return render_template('new.html', form=form)
 
 
-@app.route('/add_wiki/url', methods=['GET', 'POST'])
+@ app.route('/add_wiki/url', methods=['GET', 'POST'])
 def get_wiki_url():
     form = WikiUrlForm()
 
@@ -97,7 +113,7 @@ def get_wiki_url():
     return render_template('get_url.html', form=form)
 
 
-@app.route('/add_wiki', methods=['GET', 'POST'])
+@ app.route('/add_wiki', methods=['GET', 'POST'])
 def add_wiki():
     page = fetch_wiki_data(session['wikiPage'])
     new_citation = Citation(title=make_printable(page.title),
@@ -105,8 +121,6 @@ def add_wiki():
                             url=page.fullurl,
                             yr_accessed=datetime.datetime.now().strftime('%Y'))
     db.session.add(new_citation)
-    curr_tags = db.session.query(Tag.name).all()
-    tag_list = {}
 
     for page_section in page.sections:
         if page_section.title in excluded_sections:
@@ -121,30 +135,8 @@ def add_wiki():
                 for sentence in text:
                     printable_sentence = make_printable(sentence) + '.'
                     new_entry = Entry(content=printable_sentence)
+
                     db.session.add(new_entry)
-
-                    for ent in find_entities(printable_sentence):
-                        print('#############################')
-                        print(ent)
-                        if ent in curr_tags:
-                            print('**********************************')
-                            print('tag in database')
-                            new_tag = Tag.query(ent)
-                            new_tag.entries.append(new_entry)
-                            # new_entry.tags.append(new_tag)
-                        elif ent in tag_list:
-                            print('**********************************')
-                            print('tag added this session')
-                            new_tag = tag_list[ent]
-                            new_tag.entries.append(new_entry)
-                            # new_entry.tags.append(new_tag)
-                        else:
-                            new_tag = Tag(name=ent)
-                            tag_list[ent] = new_tag
-                            db.session.add(new_tag)
-                            new_tag.entries.append(new_entry)
-                            # new_entry.tags.append(new_tag)
-
                     new_section.entries.append(new_entry)
 
                 new_citation.sections.append(new_section)
@@ -157,30 +149,8 @@ def add_wiki():
             for sentence in text:
                 printable_sentence = make_printable(sentence) + '.'
                 new_entry = Entry(content=printable_sentence)
+
                 db.session.add(new_entry)
-
-                for ent in find_entities(printable_sentence):
-                    print('#############################')
-                    print(ent)
-                    if ent in curr_tags:
-                        print('**********************************')
-                        print('tag in database')
-                        new_tag = Tag.query(ent)
-                        new_tag.entries.append(new_entry)
-                        # new_entry.tags.append(new_tag)
-                    elif ent in tag_list:
-                        print('**********************************')
-                        print('tag added this session')
-                        new_tag = tag_list[ent]
-                        new_tag.entries.append(new_entry)
-                        # new_entry.tags.append(new_tag)
-                    else:
-                        new_tag = Tag(name=ent)
-                        tag_list[ent] = new_tag
-                        db.session.add(new_tag)
-                        new_tag.entries.append(new_entry)
-                        # new_entry.tags.append(new_tag)
-
                 new_section.entries.append(new_entry)
 
             new_citation.sections.append(new_section)
@@ -192,7 +162,7 @@ def add_wiki():
     return render_template('new.html', form=form)
 
 
-@app.route('/edit/<int:cit_id>', methods=['GET', 'POST'])
+@ app.route('/edit/<int:cit_id>', methods=['GET', 'POST'])
 def edit_citation(cit_id):
     cit = Citation.query.get_or_404(cit_id)
     form = NewCitationForm(obj=cit)

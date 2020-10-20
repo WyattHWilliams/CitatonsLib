@@ -1,7 +1,21 @@
+.container {
+    display: flex;
+}
+
+.text_editor_container {
+    flex: 60%;
+    width: 40%;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 2px solid black;
+}
+
+    .editor {
+        width: 100%;
+    }
+
 .citations_list {
-    position: relative;
-    left: 50%;
-    width: 30%;
+    flex: auto;
+
     height: auto;
 }
 
@@ -103,6 +117,23 @@
                 width: 90%;
                 margin: 0;
             }
+
+.search_results_container {
+    flex: 20%;
+    position: relative;
+    height: auto;
+}
+
+    .search_results_container h3 {
+        margin-top: 0;
+        
+    }
+
+    .search_results_list {
+        position: relative;
+        width: 100%;
+        border-left: 2px solid black;
+    }
 
 
 input {
