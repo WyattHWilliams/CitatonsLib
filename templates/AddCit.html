@@ -47,10 +47,10 @@
                                 <div id="section-{{ loop.index0 }}-entry-{{ loop.index0 }}" class="entform"
                                     data-index="{{ loop.index0 }}">
                                     <div class="entry_label">
-                                        <h6>{{ent.page_start}}:<small>{{ent.   paragraph_start}}</small> -
+                                        <h6>{{ent.page_start}}:<small>{{ent.paragraph_start}}</small> -
                                             {{ent.page_stop}}:<small>{{ent.paragraph_stop}}</small></h6>
                                     </div>
-                                    <p class="entry_content">{{ent.content}}</p>
+                                    <p class="entry_content">{{ent.content(cols="50", rows="20")}}</p>
                                     <a class="remove_ent" href="#">Remove</a>
                                 </div>
                                 {% endfor %}
@@ -67,7 +67,8 @@
 
                 <a class="add_sec" href="#">Add Section</a>
             </div>
-
+            <button class="save_btn" type="submit">Save</button>
+        </div>
     </form>
 
     <!-- TEMPLATES -->

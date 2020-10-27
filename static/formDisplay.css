@@ -23,7 +23,7 @@
 
     .header_row h4 {
         display: inline-block;
-        width: fit-content;
+        width: 100%;
         margin: 5px 0;
         padding: 2px 4px 2px 4px;
     }
@@ -74,7 +74,13 @@
 
         .section_label h5 {
             font-size: 1rem;
-            width: 100px;
+            width: 100%;
+            margin: 0;
+        }
+
+        .section_label h5 input{
+            font-size: inherit;
+            width: 100%;
             margin: 0;
         }
 
@@ -85,9 +91,14 @@
         left: 2%;
     }
         .section_summary {
+            width: 80%;
             display: inline-block;
             position: relative;
             margin: 0 0 6px 0;
+        }
+
+        .section_summary input{
+            width: 100%;
         }
 
         .entform {
@@ -108,13 +119,38 @@
                     margin: 0 0 4px 0;
                 }
 
+                .entry_label h6 input{
+                    width: 20px;
+                }
+
+                .entry_label h6 small input{
+                    width: 20px;
+                }
+                
+
             .entry_content {
                 position: relative;
-                left: 10%;
+                left: 0%;
                 width: 90%;
                 margin: 0;
             }
 
+            .entry_content input {
+                width: 100%;
+                
+            }
+
+
+.save_btn {
+    width: 25%;
+    background: rgb(106, 255, 156);
+    border: 0px;
+    transition: .25s;
+}
+
+.save_btn:hover {
+    background: rgb(0, 255, 42);
+}
 
 input {
     font-size: inherit;

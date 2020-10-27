@@ -2,19 +2,19 @@
     display: flex;
 }
 
-.text_editor_container {
+/* .text_editor_container {
     flex: 60%;
     width: 40%;
     background-color: rgba(0, 0, 0, 0.05);
     border: 2px solid black;
-}
-
+} */
+/* 
     .editor {
         width: 100%;
-    }
+    } */
 
 .citations_list {
-    flex: auto;
+    flex: 60%;
 
     height: auto;
 }
@@ -30,6 +30,14 @@
     width: 100%;
     display: flex;
 }
+
+    .drop_down_btn {
+        position: relative;
+        left: 70%;
+        border-radius: 25%;
+        background-color: pink;
+        border: pink 2px solid;
+    }
 
     .header_row h4 {
         display: inline-block;
@@ -119,7 +127,7 @@
             }
 
 .search_results_container {
-    flex: 20%;
+    flex: 40%;
     position: relative;
     height: auto;
 }

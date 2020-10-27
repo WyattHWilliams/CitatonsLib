@@ -95,7 +95,7 @@ def main():
 
         return redirect('/')
 
-    return render_template('new.html', form=form)
+    return render_template('AddCit.html', form=form)
 
 
 @ app.route('/add_wiki/url', methods=['GET', 'POST'])
@@ -159,7 +159,7 @@ def add_wiki():
     cit = Citation.query.get_or_404(new_citation.id)
     form = NewCitationForm(obj=cit)
 
-    return render_template('new.html', form=form)
+    return render_template('AddCit.html', form=form)
 
 
 @ app.route('/edit/<int:cit_id>', methods=['GET', 'POST'])
